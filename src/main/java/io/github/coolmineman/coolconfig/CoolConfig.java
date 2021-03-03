@@ -9,6 +9,9 @@ public final class CoolConfig {
 
     @SuppressWarnings("unchecked")
     public static <T extends Config> T create(Class<T> clazz) {
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, new ConfigInvocationHandler(clazz));
+        ConfigInvocationHandler handler = new ConfigInvocationHandler(clazz);
+        T result = (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, handler);
+        handler.initData(result);
+        return result;
     }
 }

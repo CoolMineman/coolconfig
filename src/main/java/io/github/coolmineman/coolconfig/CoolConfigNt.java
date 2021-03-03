@@ -1,10 +1,12 @@
 package io.github.coolmineman.coolconfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import io.github.coolmineman.coolconfig.schema.ListType;
+import io.github.coolmineman.coolconfig.schema.MapType;
 import io.github.coolmineman.coolconfig.schema.ObjectType;
 import io.github.coolmineman.coolconfig.schema.Type;
 import io.github.coolmineman.coolconfig.schema.ValueType;
@@ -31,7 +33,20 @@ public class CoolConfigNt {
         if (type instanceof ListType) {
             return convertListType((ListType)type, node);
         }
+        if (type instanceof MapType) {
+            return convertMapType((MapType)type, node);
+        }
         return null;
+    }
+
+    private static Object convertMapType(MapType type, NestedTextNode node) {
+        Type keyType = type.valueType;
+        Type valueType = type.valueType;
+        HashMap<Object, Object> result = new HashMap<>();
+        for (Entry<String, NestedTextNode> entry : node.asMap().entrySet()) {
+            result.put(convertValueType((ValueType)keyType, entry.getKey()), convert(valueType, entry.getValue()));
+        }
+        return result;
     }
 
     private static Object convertListType(ListType type, NestedTextNode node) {
@@ -43,8 +58,7 @@ public class CoolConfigNt {
         return result;
     }
 
-    private static Object convertValueType(ValueType type, NestedTextNode node) {
-        String value = node.asLeafString();
+    private static Object convertValueType(ValueType type, String value) {
         switch(type) {
             case BYTE:
                 return Byte.valueOf(value);
@@ -66,5 +80,10 @@ public class CoolConfigNt {
                 return value;
         }
 		throw new CoolConfigException("Unreachable");
+    }
+
+    private static Object convertValueType(ValueType type, NestedTextNode node) {
+        String value = node.asLeafString();
+        return convertValueType(type, value);
     }
 }

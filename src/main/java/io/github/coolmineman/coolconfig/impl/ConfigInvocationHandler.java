@@ -7,12 +7,18 @@ import io.github.coolmineman.coolconfig.schema.ObjectType;
 import io.github.coolmineman.coolconfig.tree.ConfigDataObject;
 
 public class ConfigInvocationHandler implements InvocationHandler {
+
+	private final Class<?> clazz;
 	private final ObjectType schema;
-	private final ConfigDataObject data;
+	private ConfigDataObject data;
 
 	public ConfigInvocationHandler(Class<?> clazz) {
+		this.clazz = clazz;
 		this.schema = new ObjectType(clazz);
-		this.data = new ConfigDataObject(clazz, this.schema);
+	}
+
+	public void initData(Object proxy) {
+		this.data = new ConfigDataObject(clazz, this.schema, proxy);
 	}
 
 	@Override
