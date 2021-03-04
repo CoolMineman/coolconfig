@@ -3,12 +3,14 @@ package io.github.coolmineman.coolconfig;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.coolmineman.nestedtext.api.NestedTextWriter;
 import io.github.coolmineman.nestedtext.api.tree.NestedTextNode;
 
 public class CoolConfigTest {
@@ -30,6 +32,9 @@ public class CoolConfigTest {
         assertEquals(List.of(5, 6, 7), config.epic_list());
         assertEquals(Map.of(6, "Yeet", 9, "Epic"), config.bruh());
         assertEquals(true, config.is_epic());
+        StringWriter stringWriter = new StringWriter();
+        NestedTextWriter.write(CoolConfigNt.save(config), stringWriter);
+        System.out.println(stringWriter);
     }
 
     public interface TestConfig extends Config {

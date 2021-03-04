@@ -2,6 +2,7 @@ package io.github.coolmineman.coolconfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,8 +23,19 @@ public class CoolConfigNt {
         Map<String, NestedTextNode> nodes = node.asMap();
         for (Entry<String, NestedTextNode> entry : nodes.entrySet()) {
             Type type = schema.value.get(entry.getKey());
+            if (type == null) continue;
             data.values.put(entry.getKey(), convert(type, entry.getValue()));
         }
+    }
+
+    public static NestedTextNode save(Config config) {
+        ObjectType schema = config.getSchema();
+        ConfigDataObject data = config.getData();
+        HashMap<String, NestedTextNode> result = new HashMap<>();
+        for (Entry<String, Type> entry : schema.value.entrySet()) {
+            result.put(entry.getKey(), save(entry.getValue(), data.values.get(entry.getKey())));
+        }
+        return NestedTextNode.of(result);
     }
 
     private static Object convert(Type type, NestedTextNode node) {
@@ -40,7 +52,7 @@ public class CoolConfigNt {
     }
 
     private static Object convertMapType(MapType type, NestedTextNode node) {
-        Type keyType = type.valueType;
+        Type keyType = type.keyType;
         Type valueType = type.valueType;
         HashMap<Object, Object> result = new HashMap<>();
         for (Entry<String, NestedTextNode> entry : node.asMap().entrySet()) {
@@ -85,5 +97,31 @@ public class CoolConfigNt {
     private static Object convertValueType(ValueType type, NestedTextNode node) {
         String value = node.asLeafString();
         return convertValueType(type, value);
+    }
+
+    private static NestedTextNode save(Type type, Object value) {
+        if (type instanceof MapType) {
+            return saveMap((MapType)type, (Map<Object, Object>)value);
+        } else if (type instanceof ListType) {
+            return saveList((ListType)type, (List<Object>)value);
+        } else {
+            return NestedTextNode.of(value.toString());
+        }
+    }
+
+    private static NestedTextNode saveMap(MapType type, Map<Object, Object> map) {
+        HashMap<String, NestedTextNode> result = new HashMap<>();
+        for (Entry<Object, Object> entry : map.entrySet()) {
+            result.put(entry.getKey().toString(), save(type.valueType, entry.getValue()));
+        }
+        return NestedTextNode.of(result);
+    }
+
+    private static NestedTextNode saveList(ListType type, List<Object> list) {
+        ArrayList<NestedTextNode> result = new ArrayList<>();
+        for (Object o : list) {
+            result.add(save(type.valueType, o));
+        }
+        return NestedTextNode.of(result);
     }
 }
