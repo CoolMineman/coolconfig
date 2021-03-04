@@ -33,9 +33,13 @@ public class CoolConfigNt {
         ConfigDataObject data = config.getData();
         HashMap<String, NestedTextNode> result = new HashMap<>();
         for (Entry<String, Type> entry : schema.value.entrySet()) {
-            result.put(entry.getKey(), save(entry.getValue(), data.values.get(entry.getKey())));
+            NestedTextNode node = save(entry.getValue(), data.values.get(entry.getKey()));
+            node.setComment(data.comments.get(entry.getKey()));
+            result.put(entry.getKey(), node);
         }
-        return NestedTextNode.of(result);
+        NestedTextNode resultNode = NestedTextNode.of(result);
+        resultNode.setComment(data.comment);
+        return resultNode;
     }
 
     private static Object convert(Type type, NestedTextNode node) {

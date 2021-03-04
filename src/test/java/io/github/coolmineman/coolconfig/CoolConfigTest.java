@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.coolmineman.coolconfig.annotation.Comment;
 import io.github.coolmineman.nestedtext.api.NestedTextWriter;
 import io.github.coolmineman.nestedtext.api.tree.NestedTextNode;
 
@@ -37,7 +38,9 @@ public class CoolConfigTest {
         System.out.println(stringWriter);
     }
 
+    @Comment("Epic Config")
     public interface TestConfig extends Config {
+        @Comment("This is the speed")
         default int speed() {
             return 2;
         }

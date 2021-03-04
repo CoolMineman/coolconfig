@@ -5,18 +5,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jetbrains.annotations.Nullable;
+
 import io.github.coolmineman.coolconfig.CoolConfigException;
+import io.github.coolmineman.coolconfig.annotation.Comment;
 import io.github.coolmineman.coolconfig.impl.DefaultMethodCaller;
 import io.github.coolmineman.coolconfig.schema.ObjectType;
 import io.github.coolmineman.coolconfig.schema.Type;
 
 public class ConfigDataObject {
     public final Map<String, Object> values = new HashMap<>();
+    public final Map<String, String> comments = new HashMap<>();
+    public final @Nullable String comment;
 
     public ConfigDataObject(Class<?> clazz, ObjectType schema) {
         for (Entry<String, Type> entry : schema.value.entrySet()) {
             values.put(entry.getKey(), entry.getValue().getDefaultValue(clazz, entry.getKey()));
         }
+        comment = comments(clazz);
     }
 
     public ConfigDataObject(Class<?> clazz, ObjectType schema, Object proxy) {
@@ -29,6 +35,24 @@ public class ConfigDataObject {
                     values.put(entry.getKey(), entry.getValue().getDefaultValue(clazz, entry.getKey()));
                 }
             }
+        } catch (Exception e) {
+            throw new CoolConfigException(e);
+        }
+        comment = comments(clazz);
+    }
+
+    private String comments(Class<?> clazz) {
+        try {
+            for (Method method : clazz.getMethods()) {
+                String methodName = method.getName();
+                if ("getSchema".equals(methodName) || "getData".equals(methodName)) continue;
+                Comment commentAnnotations = method.getAnnotation(Comment.class);
+                if (commentAnnotations != null) {
+                    comments.put(methodName, commentAnnotations.value());
+                }
+            }
+            Comment clazzComment = clazz.getAnnotation(Comment.class);
+            return clazzComment == null ? null : clazzComment.value();
         } catch (Exception e) {
             throw new CoolConfigException(e);
         }
