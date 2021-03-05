@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import io.github.coolmineman.coolconfig.CoolConfigException;
 import io.github.coolmineman.coolconfig.annotation.Comment;
+import io.github.coolmineman.coolconfig.annotation.NotConfigValue;
 import io.github.coolmineman.coolconfig.impl.DefaultMethodCaller;
 import io.github.coolmineman.coolconfig.schema.ObjectType;
 import io.github.coolmineman.coolconfig.schema.Type;
@@ -45,7 +46,7 @@ public class ConfigDataObject {
         try {
             for (Method method : clazz.getMethods()) {
                 String methodName = method.getName();
-                if ("getSchema".equals(methodName) || "getData".equals(methodName)) continue;
+                if (method.getAnnotation(NotConfigValue.class) != null) continue;
                 Comment commentAnnotations = method.getAnnotation(Comment.class);
                 if (commentAnnotations != null) {
                     comments.put(methodName, commentAnnotations.value());
