@@ -31,7 +31,7 @@
         <dependency>
             <groupId>io.github.coolmineman</groupId>
             <artifactId>nestedtext</artifactId>
-            <version>0.3</version>
+            <version>0.5</version>
         </dependency>
 
         <!-- junit 5 -->

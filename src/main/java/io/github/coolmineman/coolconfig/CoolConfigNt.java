@@ -94,8 +94,9 @@ public class CoolConfigNt {
                 return value.charAt(0);
             case STRING:
                 return value;
+            default:
+                throw new CoolConfigException("Unreachable");
         }
-		throw new CoolConfigException("Unreachable");
     }
 
     private static Object convertValueType(ValueType type, NestedTextNode node) {

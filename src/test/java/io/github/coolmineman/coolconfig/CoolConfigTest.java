@@ -44,9 +44,15 @@ public class CoolConfigTest {
         default int speed() {
             return 2;
         }
+        @Comment("Bruh moment")
         default Map<Integer, String> bruh() {
             return Map.of(5, "Lol", 8, "wat");
         }
+        @Comment("Bruh moment 2")
+        default Map<Integer, String> bruh2() {
+            return Map.of(9, "b  r  u  h");
+        }
+        @Comment("hmm")
         List<Integer> epic_list();
         boolean is_epic();
     }
