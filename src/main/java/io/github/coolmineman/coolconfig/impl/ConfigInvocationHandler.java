@@ -3,6 +3,7 @@ package io.github.coolmineman.coolconfig.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import io.github.coolmineman.coolconfig.annotation.NotConfigValue;
 import io.github.coolmineman.coolconfig.schema.ObjectType;
 import io.github.coolmineman.coolconfig.tree.ConfigDataObject;
 
@@ -26,6 +27,7 @@ public class ConfigInvocationHandler implements InvocationHandler {
 		String methodName = method.getName();
 		if ("getSchema".equals(methodName)) return schema;
 		if ("getData".equals(methodName)) return data;
+		if (method.getAnnotation(NotConfigValue.class) != null) return DefaultMethodCaller.INSTANCE.callDefaultMethod(proxy, method, args);
 		return data.values.get(methodName);
 	}
     
