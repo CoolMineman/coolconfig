@@ -29,7 +29,7 @@ public class ConfigInvocationHandler implements InvocationHandler {
 		if ("getData".equals(methodName)) return data;
 		if (method.getAnnotation(NotConfigValue.class) != null) return DefaultMethodCaller.INSTANCE.callDefaultMethod(proxy, method, args);
 		if ("equals".equals(methodName)) return this == args[0];
-		if ("hashcode".equals(methodName)) return clazz.hashCode();
+		if ("hashCode".equals(methodName)) return clazz.hashCode();
 		if ("toString".equals(methodName)) return "ConfigProxy";
 		return data.values.get(methodName);
 	}
