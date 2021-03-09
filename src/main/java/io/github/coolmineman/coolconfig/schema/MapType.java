@@ -1,7 +1,7 @@
 package io.github.coolmineman.coolconfig.schema;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 
 import io.github.coolmineman.coolconfig.CoolConfigException;
@@ -32,6 +32,6 @@ public final class MapType implements Type {
 
     @Override
     public Object getDefaultValue(Class<?> parent, String key) {
-        return new HashMap<>();
+        return new LinkedHashMap<>();
     }
 }

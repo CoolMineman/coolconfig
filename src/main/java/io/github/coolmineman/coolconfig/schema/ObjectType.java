@@ -1,7 +1,7 @@
 package io.github.coolmineman.coolconfig.schema;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import io.github.coolmineman.coolconfig.CoolConfigException;
@@ -17,7 +17,7 @@ public final class ObjectType implements Type {
 
     public ObjectType(Class<?> clazz) throws CoolConfigException {
         if (!clazz.isInterface()) throw new CoolConfigException("Config class must be an interface extending Config");
-        this.value = new HashMap<>();
+        this.value = new LinkedHashMap<>();
         for (Method method : clazz.getMethods()) {
             if (method.getAnnotation(NotConfigValue.class) != null) continue;
             if (method.getParameterCount() != 0) throw new CoolConfigException("Config methods must not take parameters");

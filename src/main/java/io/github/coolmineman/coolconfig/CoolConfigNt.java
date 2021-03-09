@@ -1,7 +1,7 @@
 package io.github.coolmineman.coolconfig;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +31,7 @@ public class CoolConfigNt {
     public static NestedTextNode save(Config config) {
         ObjectType schema = config.getSchema();
         ConfigDataObject data = config.getData();
-        HashMap<String, NestedTextNode> result = new HashMap<>();
+        LinkedHashMap<String, NestedTextNode> result = new LinkedHashMap<>();
         for (Entry<String, Type> entry : schema.value.entrySet()) {
             NestedTextNode node = save(entry.getValue(), data.values.get(entry.getKey()));
             node.setComment(data.comments.get(entry.getKey()));
@@ -58,7 +58,7 @@ public class CoolConfigNt {
     private static Object convertMapType(MapType type, NestedTextNode node) {
         Type keyType = type.keyType;
         Type valueType = type.valueType;
-        HashMap<Object, Object> result = new HashMap<>();
+        LinkedHashMap<Object, Object> result = new LinkedHashMap<>();
         for (Entry<String, NestedTextNode> entry : node.asMap().entrySet()) {
             result.put(convertValueType((ValueType)keyType, entry.getKey()), convert(valueType, entry.getValue()));
         }
@@ -115,7 +115,7 @@ public class CoolConfigNt {
     }
 
     private static NestedTextNode saveMap(MapType type, Map<Object, Object> map) {
-        HashMap<String, NestedTextNode> result = new HashMap<>();
+        LinkedHashMap<String, NestedTextNode> result = new LinkedHashMap<>();
         for (Entry<Object, Object> entry : map.entrySet()) {
             result.put(entry.getKey().toString(), save(type.valueType, entry.getValue()));
         }
