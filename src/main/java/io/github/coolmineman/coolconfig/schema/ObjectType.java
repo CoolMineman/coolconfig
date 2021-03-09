@@ -6,6 +6,7 @@ import java.util.Map;
 
 import io.github.coolmineman.coolconfig.CoolConfigException;
 import io.github.coolmineman.coolconfig.annotation.NotConfigValue;
+import io.github.coolmineman.coolconfig.impl.ReflectUtil;
 import io.github.coolmineman.coolconfig.tree.ConfigDataObject;
 
 public final class ObjectType implements Type {
@@ -18,7 +19,7 @@ public final class ObjectType implements Type {
     public ObjectType(Class<?> clazz) throws CoolConfigException {
         if (!clazz.isInterface()) throw new CoolConfigException("Config class must be an interface extending Config");
         this.value = new LinkedHashMap<>();
-        for (Method method : clazz.getMethods()) {
+        for (Method method : ReflectUtil.getDeclaredMethodsInOrder(clazz)) {
             if (method.getAnnotation(NotConfigValue.class) != null) continue;
             if (method.getParameterCount() != 0) throw new CoolConfigException("Config methods must not take parameters");
             this.value.put(method.getName(), Type.of(method));
